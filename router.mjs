@@ -1,18 +1,15 @@
-export const routes = {
-    GET: {
-
-        '/': (req, res) => {
-            res.end("Seu nome é hello world!");
-        },
-
-        '/produtos': (req, res) => {
-            res.end('produtos - Laptop gamer last generation 2077');
-        }
-    },
-    POST: {
-        '/produtos': (req, res) => {
-            res.end('produtos - POST');
-        },
-
+export class Router {
+    routes = {
+        GET: {},
+        POST: {},
+    };
+    get(route, handler) {
+        this.routes['GET'][route] = handler;
+    }
+    post(route, handler) {
+        this.routes['POST'][route] = handler;
+    }
+    find(method, route) {
+        return this.routes[method]?.[route] || null;
     }
 }
