@@ -1,5 +1,5 @@
 const response = await fetch(
-    "http://localhost:3000/pizza", {
+    "http://localhost:3000/produtos/notebook?cor=azul", {
     method: "GET",
     // headers: {
     //     "Content-Type": "application/json",
@@ -8,5 +8,5 @@ const response = await fetch(
 });
 
 const body = await response.text();
-// console.log(response)
+console.log(response)
 console.log(body);
