@@ -1,5 +1,7 @@
 import { createServer } from "node:http";
 import { Router } from "./router.mjs";
+import { customRequest } from "./custom-request.mjs";
+import { customResponse } from "./custom-response.mjs";
 
 const router = new Router();
 
@@ -10,34 +12,31 @@ router.get('/', (req, res) => {
 });
 
 router.get('/produtos/notebook', (req, res) => {
-    res.end('produtos - Laptop gamer last generation 2077');
+    const cor = req.query.get("cor");
+    res.status(200).json(`produtos - Laptop gamer last generation 2077 ${cor} `);
 });
 
 router.post('/produtos', (req, res) => {
-    res.end('produtos - POST');
+    const cor = req.query.get("cor");
+    res.end(`produtos - POST ${cor}`);
 });
 
-function pizza(req, res) {
-    res.end('PiZAAAAAAAAAAAAAAAAAAAA!')
+function postPizza(req, res) {
+    const cor = req.query.get('cor');
+    res.status(201).json({ produto: "notebook", cor });
 }
-router.get('/pizza', pizza);
+
+router.get('/pizza', postPizza);
 
 console.log(router.routes);
 
 
 //* server
-const server = createServer(async (req, res) => {
-    const url = new URL(req.url, "http://localhost");
-    res.setHeader("Access-Control-Allow-Origin", "Contetnt-Type , Authorization");
+const server = createServer(async (request, response) => {
+    const req = await customRequest(request);
+    const res = await customResponse(response)
 
-    // chunk é um pedaco de dado, da request
-    const chunks = [];
-    for await (const chunk of req) {
-        chunks.push(chunk);
-    }
-
-    const body = Buffer.concat(chunks).toString("utf-8");
-    const handler = router.find(req.method, url.pathname);
+    const handler = router.find(req.method, req.pathname);
     if (handler) {
         handler(req, res);
     }
