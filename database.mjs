@@ -34,6 +34,7 @@ insert.run('celular', 'Celular', 'eletronicos', 200);
 const produtos = db
     .prepare(/*sql*/` SELECT * FROM 'produtos'`)
     .all();
+
 produtos.forEach(produto => {
     console.log(produto.nome + '\n');
 });
