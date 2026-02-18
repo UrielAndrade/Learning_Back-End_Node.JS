@@ -1,0 +1,74 @@
+import { Core } from './core/core';
+import {createAula, createCourse, getCurseBySlug, listCursos, getAulaBySlug, getAulaAndCursoBySlug} from "./core/database"
+
+const core = new Core();
+
+core.router.post('/cursos', (req, res) => {
+  const { slug, nome, descricao } = req.body;
+  const criado = createCourse(slug, nome, descricao);
+  if (criado) {
+    res.status(201).json('curso criado');
+  } else {
+    res.status(400).json('erro ao criar curso');
+  }
+});
+
+core.router.post('/aulas', (req, res) => {
+  const { slug, nome, cursoSlug } = req.body;
+  const criada = createAula(cursoSlug, slug, nome);
+  if (criada) {
+    res.status(201).json('aula criada');
+  } else {
+    res.status(400).json('erro ao criar aula');
+  }
+});
+
+core.router.get('/cursos', (req, res) => {
+  const cursos = listCursos();
+  if (cursos && cursos.length) {
+    res.status(200).json(cursos);
+  } else {
+    res.status(404).json('cursos não encontrados');
+  }
+});
+
+core.router.get('/curso', (req, res) => {
+  const slug = req.query.get('slug') as string;
+  const curso = getCurseBySlug(slug);
+  if (curso) {
+    res.status(200).json(curso);
+  } else {
+    res.status(404).json('curso não encontrado');
+  }
+});
+
+core.router.get('/aulas', (req, res) => {
+  const curso = req.query.get('curso') as string;
+  const aulas = getAulaBySlug(curso);
+  if (aulas && aulas.length) {
+    res.status(200).json(aulas);
+  } else {
+    res.status(404).json('aulas não encontradas');
+  }
+});
+
+core.router.get('/aula', (req, res) => {
+  const curso = req.query.get('curso') as string;
+  const slug = req.query.get('slug') as string;
+  const aula = getAulaAndCursoBySlug(slug, curso);
+  if (aula) {
+    res.status(200).json(aula);
+  } else {
+    res.status(404).json('aula não encontrada');
+  }
+});
+
+core.router.get('/', (req,res) => {
+  res.status(200).end("Hello World");
+})
+
+core.router.get('/', (req, res) => {
+  res.status(200).end('hello');
+});
+
+core.init();
